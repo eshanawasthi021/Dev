@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Terminal | Portfolio</title>
+    <style>
+        /* CSS Styling */
+        body {
+            background-color: #0d0d0d;
+            color: #00ff41;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        #terminal {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: #1a1a1a #0d0d0d;
+        }
+
+        .input-area {
+            display: flex;
+            align-items: center;
+        }
+
+        .prompt {
+            color: #ff0055; /* Hot pink for the user prompt */
+            margin-right: 10px;
+            white-space: nowrap;
+        }
+
+        #command-input {
+            background: transparent;
+            border: none;
+            color: #00ff41;
+            outline: none;
+            font-family: inherit;
+            font-size: 1.1rem;
+            width: 100%;
+        }
+
+        .line { margin-bottom: 5px; line-height: 1.4; }
+        .command-text { color: #ffffff; }
+        .response-text { color: #00ff41; padding-left: 15px; }
+        
+        /* Scanning line effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="terminal">
+        <div id="history">
+            <div class="line">Establishing connection... [OK]</div>
+            <div class="line">Welcome to DevOS v2.0.0. Type <b style="color:white">'help'</b> to begin.</div>
+            <br>
+        </div>
+    </div>
+
+    <div class="input-area">
+        <span class="prompt">guest@portfolio:~$</span>
+        <input type="text" id="command-input" autofocus autocomplete="off">
+    </div>
+
+    <script>
+        const input = document.getElementById('command-input');
+        const history = document.getElementById('history');
+        const terminal = document.getElementById('terminal');
+
+        // Portfolio Data
+        const commands = {
+            help: "Commands: 'about', 'projects', 'skills', 'contact', 'clear'",
+            about: "I'm a developer who loves building interactive web experiences and solving complex problems.",
+            skills: "Languages: JavaScript, Python, C++ | Tools: Git, Docker, React, Node.js",
+            projects: "1. Terminal Site (Current) | 2. AI Chatbot | 3. Blockchain Ledger",
+            contact: "Email: yourname@email.com | GitHub: github.com/yourusername",
+        };
+
+        // Focus input on click anywhere
+        document.addEventListener('click', () => input.focus());
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = input.value.toLowerCase().trim();
+                
+                // 1. Log the command
+                const line = document.createElement('div');
+                line.className = 'line';
+                line.innerHTML = `<span class="prompt">guest@portfolio:~$</span> <span class="command-text">${cmd}</span>`;
+                history.appendChild(line);
+
+                // 2. Process Response
+                if (cmd === 'clear') {
+                    history.innerHTML = '';
+                } else if (commands[cmd]) {
+                    const response = document.createElement('div');
+                    response.className = 'line response-text';
+                    response.textContent = `> ${commands[cmd]}`;
+                    history.appendChild(response);
+                } else if (cmd !== "") {
+                    const error = document.createElement('div');
+                    error.className = 'line';
+                    error.style.color = 'red';
+                    error.textContent = `Error: Command '${cmd}' not recognized.`;
+                    history.appendChild(error);
+                }
+
+                // Clean up
+                input.value = '';
+                terminal.scrollTop = terminal.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>
+
